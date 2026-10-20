@@ -1,0 +1,13 @@
+{
+  "version": "3.3.2",
+  "variant": "release",
+  "builtAt": "2026-10-20T22:32:52.635Z",
+  "bytes": 15693185,
+  "versionCode": 5,
+  "commit": null,
+  "sha256": "b3c20d649c92302674c360638f2143cb61a2911fc98d28df81f0eb255d0ff3dd",
+  "appId": "com.earthfr.game",
+  "signing": "local testing key; not for store publishing",
+  "url": "https://github.com/towheduldev/EarthFR-updates/releases/download/v3.3.2-android.5/EarthFR.apk",
+  "tag": "v3.3.2-android.5"
+}
