@@ -1,0 +1,54 @@
+name: Publish EarthFR update
+on:
+  push:
+    branches: [main]
+    paths: [EarthFR.apk, EarthFR.json, candidate.json]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: public-android-feed
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Verify APK and publish versioned update
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          test "$GH_REPO" = 'towheduldev/EarthFR-updates'
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import {createHash} from 'node:crypto';
+          const m=JSON.parse(fs.readFileSync('candidate.json','utf8'));
+          const apk=fs.readFileSync('EarthFR.apk');
+          if(m.appId!=='com.earthfr.game'||m.variant!=='release'||!/^\d+\.\d+\.\d+(?:[-+][A-Za-z0-9.-]+)?$/.test(m.version)||!Number.isSafeInteger(m.versionCode)||m.versionCode<1||m.bytes!==apk.length||createHash('sha256').update(apk).digest('hex')!==m.sha256)throw Error('Invalid update');
+          if(m.tag!==`v${m.version}-android.${m.versionCode}`||m.url!==`https://github.com/towheduldev/EarthFR-updates/releases/download/${m.tag}/EarthFR.apk`)throw Error('Invalid update URL');
+          fs.writeFileSync('EarthFR.apk.sha256',`${m.sha256}  EarthFR.apk\n`);
+          NODE
+          TAG=$(node -p 'JSON.parse(require("fs").readFileSync("candidate.json")).tag')
+          VERSION=$(node -p 'JSON.parse(require("fs").readFileSync("candidate.json")).version')
+          sha256sum --check EarthFR.apk.sha256
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" EarthFR.apk --clobber
+          else
+            gh release create "$TAG" EarthFR.apk --target "$GITHUB_SHA" --title "EarthFR v$VERSION" --notes 'Signed Android update. Install over EarthFR to preserve your saved game.' --latest=false
+          fi
+          # Publish the feed only after the APK exists. It is not a release asset.
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import {spawnSync} from 'node:child_process';
+          const api=(args,input)=>{const r=spawnSync('gh',args,{encoding:'utf8',input});if(r.status!==0)throw Error(r.stderr);return JSON.parse(r.stdout);};
+          const route='repos/'+process.env.GH_REPO+'/contents/latest.json';
+          let previous=null;try{previous=api(['api',route]);}catch(error){if(!String(error.message).includes('404'))throw error;}
+          const next=JSON.parse(fs.readFileSync('candidate.json','utf8'));
+          if(previous&&JSON.parse(Buffer.from(previous.content,'base64').toString()).versionCode>next.versionCode){console.log('Newer feed already exists.');}
+          else{api(['api','--method','PUT',route,'--input','-'],JSON.stringify({message:'Update feed for EarthFR v'+next.version,content:Buffer.from(JSON.stringify(next,null,2)+'\n').toString('base64'),...(previous?{sha:previous.sha}:{})}));}
+          NODE
