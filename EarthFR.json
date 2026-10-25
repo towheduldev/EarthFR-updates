@@ -1,11 +1,11 @@
 {
-  "version": "3.4.0",
+  "version": "3.4.1",
   "variant": "release",
-  "builtAt": "2026-10-24T19:31:49.449Z",
-  "bytes": 17726495,
-  "versionCode": 1011,
-  "commit": "8afe89ff0a551041a1dd9e8c4597cc5dd5317f02",
-  "sha256": "d88742a1e39f0823cdf44aa658cf13de50506a1a39980091e9194776a2b6986b",
+  "builtAt": "2026-10-25T14:44:32.669Z",
+  "bytes": 19528721,
+  "versionCode": 1012,
+  "commit": "3669c53af7c613d3f7a5212fd80576dcdd1b8691",
+  "sha256": "056a0bf459bc4e7f8a5948e6290d3c47eaa68f2993543c020755e64892042c3f",
   "appId": "com.earthfr.game",
   "signing": "local testing key; not for store publishing"
 }
