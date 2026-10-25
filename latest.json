@@ -1,13 +1,13 @@
 {
-  "version": "3.4.1",
+  "version": "3.4.2",
   "variant": "release",
-  "builtAt": "2026-10-25T14:44:32.669Z",
-  "bytes": 19528721,
-  "versionCode": 1012,
-  "commit": "3669c53af7c613d3f7a5212fd80576dcdd1b8691",
-  "sha256": "056a0bf459bc4e7f8a5948e6290d3c47eaa68f2993543c020755e64892042c3f",
+  "builtAt": "2026-10-25T19:25:48.568Z",
+  "bytes": 19665978,
+  "versionCode": 1013,
+  "commit": "473d690e08f38ca4873bab53196012191556c2c1",
+  "sha256": "91df460f54acbc860d4a6ad0f1f5f3bb4d0d6a5aec7ccbabac6c994bd022dc0d",
   "appId": "com.earthfr.game",
   "signing": "local testing key; not for store publishing",
-  "url": "https://github.com/towheduldev/EarthFR-updates/releases/download/v3.4.1-android.1012/EarthFR.apk",
-  "tag": "v3.4.1-android.1012"
+  "url": "https://github.com/towheduldev/EarthFR-updates/releases/download/v3.4.2-android.1013/EarthFR.apk",
+  "tag": "v3.4.2-android.1013"
 }
